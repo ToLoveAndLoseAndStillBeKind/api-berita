@@ -8,6 +8,7 @@ const helmet_1 = __importDefault(require("helmet"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const routes_1 = __importDefault(require("./routes"));
 const rateLimiter_1 = require("./middleware/rateLimiter");
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,8 @@ app.use((0, helmet_1.default)());
 app.use(rateLimiter_1.rateLimiter);
 app.use(express_1.default.json({ limit: "10mb" }));
 app.use(express_1.default.urlencoded({ extended: true, limit: "10mb" }));
+// Serve static files
+app.use(express_1.default.static(path_1.default.join(process.cwd(), "public")));
 app.use("/api/v1", routes_1.default);
 app.use((err, req, res, next) => {
     console.error("Global error:", err);
@@ -31,7 +34,7 @@ app.get("/", (req, res) => {
         success: true,
         message: "Selamat datang di News API",
         version: "1.0.0",
-        documentation: "/api/v1/health",
+        documentation: "/api/v1/docs",
         developedBy: "Fahreza Pratama Hidayat",
         repository: "https://github.com/fahrezapratamahidayat/rest-api-berita",
     });
@@ -44,7 +47,7 @@ app.use("*", (req, res) => {
 });
 app.listen(PORT, () => {
     console.log(`🚀 News API server is running on port ${PORT}`);
-    console.log(`📚 API Documentation: http://localhost:${PORT}/api/v1/health`);
+    console.log(`📚 API Documentation: http://localhost:${PORT}/api/v1/docs`);
 });
 exports.default = app;
 //# sourceMappingURL=index.js.map

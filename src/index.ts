@@ -3,6 +3,7 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import routes from "./routes";
 import { rateLimiter } from "./middleware/rateLimiter";
+import path from "path";
 
 dotenv.config();
 
@@ -15,6 +16,9 @@ app.use(rateLimiter);
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Serve static files
+app.use(express.static(path.join(process.cwd(), "public")));
 
 app.use("/api/v1", routes);
 
@@ -42,7 +46,7 @@ app.get("/", (req, res) => {
         success: true,
         message: "Selamat datang di News API",
         version: "1.0.0",
-        documentation: "/api/v1/health",
+        documentation: "/api/v1/docs",
         developedBy: "Fahreza Pratama Hidayat",
         repository: "https://github.com/fahrezapratamahidayat/rest-api-berita",
     });
@@ -57,7 +61,7 @@ app.use("*", (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`🚀 News API server is running on port ${PORT}`);
-    console.log(`📚 API Documentation: http://localhost:${PORT}/api/v1/health`);
+    console.log(`📚 API Documentation: http://localhost:${PORT}/api/v1/docs`);
 });
 
 export default app;

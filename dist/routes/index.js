@@ -6,9 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const articleRoutes_1 = __importDefault(require("./articleRoutes"));
 const authRoutes_1 = __importDefault(require("./authRoutes"));
+const path_1 = __importDefault(require("path"));
 const router = (0, express_1.Router)();
 router.use("/news", articleRoutes_1.default);
 router.use("/auth", authRoutes_1.default);
+// Serve documentation
+router.get("/docs", (req, res) => {
+    res.sendFile(path_1.default.join(process.cwd(), "public", "index.html"));
+});
 // Health check endpoint
 router.get("/health", (req, res) => {
     res.json({
@@ -17,6 +22,7 @@ router.get("/health", (req, res) => {
         timestamp: new Date().toISOString(),
         developer: "Fahreza Pratama Hidayat",
         repository: "https://github.com/fahrezapratamahidayat/rest-api-berita",
+        documentation: "/api/v1/docs",
         endpoints: {
             auth: {
                 register: {
@@ -25,7 +31,7 @@ router.get("/health", (req, res) => {
                     description: "Mendaftarkan pengguna baru",
                     body: {
                         email: "string (required)",
-                        password: "string (required) min 16 character",
+                        password: "string (required) min 6 character",
                         name: "string (required)",
                         title: "string (required)",
                         avatar: "string (required)",
